@@ -1,0 +1,30 @@
+server {
+  listen ${PORT};
+  listen [::]:${PORT};
+  server_name _;
+
+  root /usr/share/nginx/html;
+  index index.html;
+
+  location = /healthz {
+    default_type text/plain;
+    return 200 "unik-arc-ok\n";
+  }
+
+  location ~* \.(?:png|webp|jpg|jpeg|svg)$ {
+    expires 7d;
+    add_header Cache-Control "public, max-age=604800, immutable";
+    try_files $uri =404;
+  }
+
+  location = /Metodo-ARC-UNIK-Beauty-90-dias.pdf {
+    default_type application/pdf;
+    add_header Cache-Control "public, max-age=300";
+    try_files $uri =404;
+  }
+
+  location / {
+    add_header Cache-Control "no-store";
+    try_files $uri $uri/ /index.html;
+  }
+}
